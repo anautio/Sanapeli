@@ -32,6 +32,7 @@ class WordGame:
         self.submit_button = None
         self.delete_button = None
         self.new_game_button = None
+        self.remove_choices_button = None
         self.word = ''
         self.tries = 0
         self.word_to_be_deleted = 0
@@ -53,8 +54,8 @@ class WordGame:
         self.delete_button = tk.Button(self.frame, text='Poista tämä sana', state='disabled', command=self.delete_word)
         self.delete_button.grid(row=self.rows + 3, columnspan=self.cols)
 
-        self.new_game_button = tk.Button(self.frame, text='Näytä ratkaisu', command=self.print_solution)
-        self.new_game_button.grid(row=self.rows + 4, columnspan=self.cols)
+        self.remove_choices_button = tk.Button(self.frame, text='Poista valinnat', command=self.remove_choices)
+        self.remove_choices_button.grid(row=self.rows + 4, columnspan=self.cols)
 
         self.new_game_button = tk.Button(self.frame, text='Uusi peli', command=self.refresh)
         self.new_game_button.grid(row=self.rows + 5, columnspan=self.cols)
@@ -112,7 +113,6 @@ class WordGame:
                     coord_tile = neighbours[chosen_index[0]]
                 # If all neighbours are length 8, tiling is not acceptable, and we try again
                 elif sum(i == 8 for i in areas) == total_neighbours:
-                    # raise Exception("All neighbours are length 8!")
                     self.init_letters()
                     return
                 else:
@@ -122,8 +122,6 @@ class WordGame:
                     chosen_index = random.sample(indices, 1)
                     coord_tile = neighbours[chosen_index[0]]
                 tiles[coord[0]][coord[1]] = coord_tile
-
-        # print('Tiles before expanding:\n', tiles)
 
         # If some tile is smaller than 4, we try to give it extra squares from neighbours
         for i in range(1, no_of_submitted_words+1):
@@ -136,7 +134,7 @@ class WordGame:
                         return
 
         # print('Tiles after expanding:\n', tiles)
-        # Add letters to buttons
+        # We succeded in dividing the grid. Now add letters to buttons.
         self.tiling = tiles
         self.add_words(tiles)
         for row in range(self.rows):
@@ -151,7 +149,7 @@ class WordGame:
             file = f'kotus_sanalista_{no_of_letters}.txt'
             chosen_word = random.choice(open(file).readlines())
             chosen_word = chosen_word[:-1]
-            chosen_word = chosen_word.replace("Ã¶", 'ö')
+            chosen_word = chosen_word.replace("Ã¶", 'ö')  # some encoding issues
             chosen_word = chosen_word.replace("Ã¤", 'ä')
             where = np.where(tiles == i)
             for j in range(len(chosen_word)):
@@ -184,9 +182,33 @@ class WordGame:
                 consumed_tile_list.append([where[0][j], where[1][j]])
             if len(np.where(tiles == old_tile)[0]) >= 5 and self.check_if_contiguous(consumed_tile_list):
                 return tiles_new
-        # raise Exception("Could not expand tile")
-        # If we get here, we could not expand tile. Let's try again.
         return np.zeros(1)
+
+    def check_if_contiguous(self, squares):
+        if not squares:  # squares.any()
+            return True
+        squares_copy = squares.copy()
+        q = [squares[0]]
+        connected_squares = set()
+
+        while q:
+            coord = q[0]
+            q.remove(coord)
+            if coord in squares_copy:
+                squares_copy.remove(coord)
+            connected_squares.add(tuple(coord))
+            if [coord[0] + 1, coord[1]] in squares_copy:
+                q.append([coord[0] + 1, coord[1]])
+            if [coord[0] - 1, coord[1]] in squares_copy:
+                q.append([coord[0] - 1, coord[1]])
+            if [coord[0], coord[1] + 1] in squares_copy:
+                q.append([coord[0], coord[1] + 1])
+            if [coord[0], coord[1] - 1] in squares_copy:
+                q.append([coord[0], coord[1] - 1])
+        if len(connected_squares) == len(squares):
+            return True
+        else:
+            return False
 
     def click_letter(self, r, c):
 
@@ -217,7 +239,7 @@ class WordGame:
         elif len(self.chosen_buttons) <= 3:
             self.word = ''
             for coord in self.chosen_buttons:
-                self.word = self.word + self.button_texts[coord[0]][coord[1]]  # self.button_texts[10 * coord[0] + coord[1]]
+                self.word = self.word + self.button_texts[coord[0]][coord[1]]
             self.word_message.configure(text=f'Liian lyhyt sana: {self.word}')
         elif len(self.chosen_buttons) > 8:
             self.word_message.configure(text='Liian pitkä sana')
@@ -233,31 +255,13 @@ class WordGame:
                 self.submit_button.config(state='active')
                 self.submit_button.config(text='Valitse sana')
 
-    def check_if_contiguous(self, squares):
-        if not squares:  # squares.any()
-            return True
-        squares_copy = squares.copy()
-        q = [squares[0]]
-        connected_squares = set()
-
-        while q:
-            coord = q[0]
-            q.remove(coord)
-            if coord in squares_copy:
-                squares_copy.remove(coord)
-            connected_squares.add(tuple(coord))
-            if [coord[0] + 1, coord[1]] in squares_copy:
-                q.append([coord[0] + 1, coord[1]])
-            if [coord[0] - 1, coord[1]] in squares_copy:
-                q.append([coord[0] - 1, coord[1]])
-            if [coord[0], coord[1] + 1] in squares_copy:
-                q.append([coord[0], coord[1] + 1])
-            if [coord[0], coord[1] - 1] in squares_copy:
-                q.append([coord[0], coord[1] - 1])
-        if len(connected_squares) == len(squares):
-            return True
-        else:
-            return False
+    def remove_choices(self):
+        new_color = 'SystemButtonFace'
+        for word in self.chosen_buttons:
+            self.buttons[word[0]][word[1]].config(bg=new_color)
+        self.chosen_buttons = []
+        self.word = ''
+        self.word_message.configure(text='Valitse kirjaimia')
 
     def submit_word(self):
         colors = ['#e62f07', '#f3ef0d', '#1ff30d', '#0ee4ee', '#ee0ee7', '#116b34', '#d68b11',
@@ -300,6 +304,7 @@ class WordGame:
         self.root.destroy()
         self.__init__()
 
+    # This is mostly debugging, right now there is no option to see solution
     def print_solution(self):
         print(self.tiling)
 
