@@ -148,7 +148,7 @@ class WordGame:
     def add_words(self, tiles):
         for i in range(1, int(np.amax(tiles))+1):
             no_of_letters = np.count_nonzero(tiles == i)
-            file = f'C:\\Users\\antti\\OneDrive\\Tiedostot\\kotus_sanalista_{no_of_letters}.txt'
+            file = f'kotus_sanalista_{no_of_letters}.txt'
             chosen_word = random.choice(open(file).readlines())
             chosen_word = chosen_word[:-1]
             chosen_word = chosen_word.replace("Ã¶", 'ö')
@@ -228,7 +228,7 @@ class WordGame:
             self.word_message.configure(text=self.word)
             chosen_word = self.word.replace('ö', "Ã¶")
             chosen_word = chosen_word.replace('ä', "Ã¤")
-            file = open(f'C:\\Users\\antti\\OneDrive\\Tiedostot\\kotus_sanalista_{len(self.chosen_buttons)}.txt', 'r')
+            file = open(f'kotus_sanalista_{len(self.chosen_buttons)}.txt', 'r')
             if chosen_word in file.read():
                 self.submit_button.config(state='active')
                 self.submit_button.config(text='Valitse sana')
