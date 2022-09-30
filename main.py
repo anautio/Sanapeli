@@ -44,6 +44,7 @@ class WordGame:
 
         self.init_letters()
         print('Tries: ', self.tries)
+
         self.word_message = tk.Message(self.frame, text='Valitse kirjaimia', width=200)
         self.word_message.grid(row=self.rows + 1, columnspan=self.cols)
 
@@ -146,7 +147,7 @@ class WordGame:
     def add_words(self, tiles):
         for i in range(1, int(np.amax(tiles))+1):
             no_of_letters = np.count_nonzero(tiles == i)
-            file = f'kotus_sanalista_{no_of_letters}.txt'
+            file = f'kotus_sanalista_{no_of_letters}_uusi.txt'
             chosen_word = random.choice(open(file).readlines())
             chosen_word = chosen_word[:-1]
             chosen_word = chosen_word.replace("Ã¶", 'ö')  # some encoding issues
@@ -217,8 +218,6 @@ class WordGame:
                 self.delete_button.config(state='active')
                 self.word_to_be_deleted = self.submitted_buttons[r][c]
             return
-
-        self.delete_button.config(state='disabled')
         clicked_btn = self.buttons[r][c]
         if clicked_btn['bg'] == 'SystemButtonFace':
             new_color = 'blue'
@@ -250,7 +249,7 @@ class WordGame:
             self.word_message.configure(text=self.word)
             chosen_word = self.word.replace('ö', "Ã¶")
             chosen_word = chosen_word.replace('ä', "Ã¤")
-            file = open(f'kotus_sanalista_{len(self.chosen_buttons)}.txt', 'r')
+            file = open(f'kotus_sanalista_{len(self.chosen_buttons)}_uusi.txt', 'r')
             if chosen_word in file.read():
                 self.submit_button.config(state='active')
                 self.submit_button.config(text='Valitse sana')
@@ -299,6 +298,7 @@ class WordGame:
             self.submitted_buttons[coord[0]][coord[1]] = 0
             button = self.buttons[coord[0]][coord[1]]
             button.config(bg='SystemButtonFace')
+        self.delete_button.config(state='disabled')
 
     def refresh(self):
         self.root.destroy()
