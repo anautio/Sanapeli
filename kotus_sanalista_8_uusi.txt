@@ -2641,9 +2641,7 @@ maaherra
 maahinen
 maajohto
 maajussi
-maakaari
 maakaasu
-maakarhu
 maakotka
 maakrapu
 maakunta
@@ -4283,7 +4281,6 @@ seuraava
 seurailu
 seuranta
 shamaani
-shektaus
 shortsit
 sianliha
 sideaine

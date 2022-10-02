@@ -212,7 +212,6 @@ class WordGame:
             return False
 
     def click_letter(self, r, c):
-
         if self.submitted_buttons[r][c]:
             if len(self.chosen_buttons) == 0:
                 self.delete_button.config(state='active')
