@@ -37,6 +37,7 @@ class WordGame:
         self.tries = 0
         self.word_to_be_deleted = 0
         self.tiling = None
+        self.won = False
 
         self.create_widgets()
 
@@ -212,6 +213,8 @@ class WordGame:
             return False
 
     def click_letter(self, r, c):
+        if self.won:
+            return
         if self.submitted_buttons[r][c]:
             if len(self.chosen_buttons) == 0:
                 self.delete_button.config(state='active')
@@ -279,7 +282,11 @@ class WordGame:
         self.chosen_buttons = []
 
         # Check if game is finished
-        if 0 not in self.submitted_buttons:
+        if 0 not in self.submitted_buttons and not self.won:
+            self.won = True
+            self.delete_button.config(state='disabled')
+            self.remove_choices_button.config(state='disabled')
+            self.submit_button.config(state='disabled')
             toc = time.perf_counter()
             elapsed_time = toc - self.tic
             minutes = floor(elapsed_time/60)
