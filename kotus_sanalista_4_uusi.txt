@@ -7,7 +7,6 @@ aava
 aave
 afro
 afta
-agar
 ahjo
 ahma
 ahne
@@ -131,9 +130,7 @@ hede
 hela
 helo
 hely
-hepo
 hera
-hete
 heti
 hevi
 hifi
@@ -170,7 +167,6 @@ hötö
 idea
 iglu
 ihan
-ihka
 ihme
 ihra
 iiri
@@ -208,7 +204,6 @@ jojo
 joki
 joku
 jono
-jopa
 judo
 juju
 jumi
@@ -323,7 +318,6 @@ lama
 lana
 lapa
 lape
-lari
 lasi
 lato
 latu
@@ -366,10 +360,8 @@ luti
 lyly
 läjä
 läpi
-löpö
 made
 maha
-maho
 maja
 maku
 mana
@@ -490,8 +482,6 @@ pari
 pata
 pato
 peli
-peni
-peru
 perä
 peso
 pesu
@@ -546,7 +536,6 @@ raha
 rahi
 raja
 raju
-raki
 rako
 rapa
 rapu
