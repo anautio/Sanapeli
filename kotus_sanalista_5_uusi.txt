@@ -1946,7 +1946,6 @@ taide
 taiga
 taika
 taimi
-taita
 taite
 taito
 takka
